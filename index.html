@@ -10,13 +10,39 @@
 <body>
     <div class="container">
         <form id="movie-form">
-            <input type="text" id="movie-name" placeholder="Name of the movie">
-            <input type="text" id="movie-category" placeholder="Category">
-            <input type="number" id="movie-year" placeholder="Release year">
-            <input type="text" id="movie-director" placeholder="Name of the director">
+            <div>
+                <input type="text" id="movie-name" placeholder="Name of the movie" required>
+                <span class="validation-message">mac mac</span>
+            </div>
+            <div>
+                <input type="text" id="movie-category" placeholder="Category">
+                <span class="validation-message"></span>
+            </div>
+            <div>
+                <input type="number" id="movie-year" placeholder="Release year">
+                <span class="validation-message"></span>
+            </div>
+            <div>
+                <input type="text" id="movie-director" placeholder="Name of the director">
+                <span class="validation-message"></span>
+            </div>
         </form>
         <input type="submit" id="movie-submit" form="movie-form" value="Add movie">
+        <hr>
+        <table class="movie-table">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Category</th>
+                    <th>Release year</th>
+                    <th>Director</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody id="movie-table-body"></tbody>
+        </table>
     </div>
+
     <script src="app.js"></script>
 </body>
 </html>
