@@ -68,10 +68,11 @@ td{
 /* Table headers (results in columns with this width) */
 th{
     width: 150px;
+    position: sticky;
 }
 
 /* Delete button */
-#delete-btn{
+.delete-btn{
     background-color: red;
     color: var(--light);
     text-decoration: none;
