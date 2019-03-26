@@ -11,20 +11,51 @@
     <div class="container">
         <form id="movie-form">
             <div>
-                <input type="text" id="movie-name" placeholder="Name of the movie" required>
-                <span class="validation-message">mac mac</span>
+                <input 
+                    type="text" 
+                    id="movie-name" 
+                    placeholder="Name of the movie" 
+                    required>
+                <span data-rule="valueMissing" class="hide">This field is mandatory.</span>
             </div>
             <div>
-                <input type="text" id="movie-category" placeholder="Category">
-                <span class="validation-message"></span>
+                <select name="movie-category" id="movie-category">
+                    <option value="Action">Action</option>
+                    <option value="Adventure">Adventure</option>
+                    <option value="Animation">Animation</option>
+                    <option value="Biography">Biography</option>
+                    <option value="Comedy">Comedy</option>
+                    <option value="Crime">Crime</option>
+                    <option value="Documentary">Documentary</option>
+                    <option value="Drama">Drama</option>
+                    <option value="Fantasy">Fantasy</option>
+                    <option value="Horror">Horror</option>
+                    <option value="Musical">Musical</option>
+                    <option value="Mistery">Mistery</option>
+                    <option value="Sci-Fi">Sci-Fi</option>
+                    <option value="Thriller">Thriller</option>
+                    <option value="Western">Western</option>
+                </select>
             </div>
             <div>
-                <input type="number" id="movie-year" placeholder="Release year">
-                <span class="validation-message"></span>
+                <input 
+                    type="text" 
+                    id="movie-year" 
+                    placeholder="Release year"
+                    pattern="\d+"
+                    required>
+                <span data-rule="valueMissing" class="hide">This field is mandatory.</span>
+                <span data-rule="patternMismatch" class="hide">The year of release should contain only digits from 0-9</span>
             </div>
             <div>
-                <input type="text" id="movie-director" placeholder="Name of the director">
-                <span class="validation-message"></span>
+                <input 
+                    type="text" 
+                    id="movie-director" 
+                    placeholder="Name of the director" 
+                    pattern="([A-Z])\w+\s([A-Z])\w+" 
+                    required>
+                <span data-rule="valueMissing" class="hide">This field is mandatory.</span>
+                <span data-rule="patternMismatch" class="hide">The name of the director should contain only letters, starting with a capital one.</span>
             </div>
         </form>
         <input type="submit" id="movie-submit" form="movie-form" value="Add movie">
