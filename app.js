@@ -2,6 +2,7 @@
 const container = document.querySelector('.container');
 const movieForm = document.getElementById('movie-form');
 const movieTableBody = document.getElementById('movie-table-body');
+const movieTableClearBtn = document.getElementById('movie-table-clear');
 
 // Movie class for handling input values
 class Movie{
@@ -11,51 +12,11 @@ class Movie{
         this.year = year;
         this.director = director;
     }
-
-    storeMovieLocally(){
-        let names, categories, years, directors;
-
-        if(localStorage.getItem('names') === null){
-            names = [];
-        } else{
-            names = JSON.parse(localStorage.getItem('names'));
-        }
-
-        names.push(this.name);
-
-        if(localStorage.getItem('categories') === null){
-            categories = [];
-        } else{
-            categories = JSON.parse(localStorage.getItem('categories'));
-        }
-
-        categories.push(this.category);
-
-        if(localStorage.getItem('years') === null){
-            years = [];
-        } else{
-            years = JSON.parse(localStorage.getItem('years'));
-        }
-
-        years.push(this.year);
-
-        if(localStorage.getItem('directors') === null){
-            directors = [];
-        } else{
-            directors = JSON.parse(localStorage.getItem('directors'));
-        }
-
-        directors.push(this.director);
-
-        localStorage.setItem('names', JSON.stringify(names));
-        localStorage.setItem('categories', JSON.stringify(categories));
-        localStorage.setItem('years', JSON.stringify(years));
-        localStorage.setItem('directors', JSON.stringify(directors));
-    }
 }
 
 // UI class for manipulating the DOM
 class UI{
+    // Method for displaying the movie on the list
     addMovieUI(movieData){
 
         const tableRow=document.createElement('tr');
@@ -70,6 +31,7 @@ class UI{
         movieTableBody.appendChild(tableRow);
     }
 
+    // Method for clearing the input after submitting a form
     clearInput(){
         document.getElementById('movie-name').value='';
         document.getElementById('movie-category').value='';
@@ -77,6 +39,7 @@ class UI{
         document.getElementById('movie-director').value='';
     }
 
+    // Method for displaying validation messages for each type of data-rule
     validationFail(e){
         let element, validity;
         
@@ -108,6 +71,7 @@ class UI{
         e.preventDefault();
     }
 
+    // Method for validating the input and hiding the validation messages
     validate(){
         let validationMessages = document.querySelectorAll('form div span');
 
@@ -117,92 +81,69 @@ class UI{
         movieForm.checkValidity();
     }
 
-    deleteMovieUI(e){
-        if(e.target.classList.contains('delete-btn')){
-            e.target.parentNode.parentNode.classList.add('hide');
+    // Method for deleting the movie from the list at UI level
+    deleteMovie(e){
+
+        const element = e.target;
+        if(element.classList.contains('delete-btn')){
+            element.parentNode.parentNode.classList.add('hide');
         }
-
-        let names, categories, years, directors;
-
-        if(localStorage.getItem('names') === null){
-            names = [];
-        } else{
-            names = JSON.parse(localStorage.getItem('names'));
-        }
-
-        if(localStorage.getItem('categories') === null){
-            categories = [];
-        } else{
-            categories = JSON.parse(localStorage.getItem('categories'));
-        }
-
-        if(localStorage.getItem('years') === null){
-            years = [];
-        } else{
-            years = JSON.parse(localStorage.getItem('years'));
-        }
-
-        if(localStorage.getItem('directors') === null){
-            directors = [];
-        } else{
-            directors = JSON.parse(localStorage.getItem('directors'));
-        }
-
-
-        for(var i = 0; i < names.length; i++){
-            if(names[i] === e.target.parentNode.parentNode.firstChild.textContent){
-                names.splice(i, 1);
-                categories.splice(i, 1);
-                years.splice(i, 1);
-                directors.splice(i, 1);
-            }
-        }
-
-        localStorage.setItem('names', JSON.stringify(names));
-        localStorage.setItem('categories', JSON.stringify(categories));
-        localStorage.setItem('years', JSON.stringify(years));
-        localStorage.setItem('directors', JSON.stringify(directors));
+        e.preventDefault();
     }
 
-    persistMovieList(){
-        let names, categories, years, directors;
+    // Method for clearing the movie list at UI level
+    clearList(){
+        while(movieTableBody.firstChild){
+            movieTableBody.removeChild(movieTableBody.firstChild);
+        }
+    }
+}
 
-        if(localStorage.getItem('names') === null){
-            names = [];
+class Store{
+    // Static method for fetching the movies from localStorage
+    static getMovies(){
+        let movies;
+
+        if(localStorage.getItem('movies') === null){
+            movies = [];
         } else{
-            names = JSON.parse(localStorage.getItem('names'));
+            movies = JSON.parse(localStorage.getItem('movies'));
         }
 
-        if(localStorage.getItem('categories') === null){
-            categories = [];
-        } else{
-            categories = JSON.parse(localStorage.getItem('categories'));
-        }
+        return movies;
+    }
 
-        if(localStorage.getItem('years') === null){
-            years = [];
-        } else{
-            years = JSON.parse(localStorage.getItem('years'));
-        }
+    // Static method for displaying the movie list based on the movies fetched from localStorage
+    static displayMovies(){
+        const movies = Store.getMovies();
 
-        if(localStorage.getItem('directors') === null){
-            directors = [];
-        } else{
-            directors = JSON.parse(localStorage.getItem('directors'));
-        }
+        const ui = new UI();
 
-        for(var i = 0 ; i < names.length; i++){
-            const tableRow=document.createElement('tr');
-            tableRow.id = 'table-row';
-            tableRow.innerHTML = `
-                <td>${names[i]}</td>
-                <td>${categories[i]}</td>
-                <td>${years[i]}</td>
-                <td>${directors[i]}</td>
-                <td><a class="delete-btn" href="#">Delete</a></td>
-                `;
-            movieTableBody.appendChild(tableRow);
-        }
+        movies.forEach(function(movie){
+            ui.addMovieUI(movie);
+        });
+    }
+
+    // Static method for adding a movie to the localStorage key 'movies'
+    static addMoviesLS(movie){
+        const movies = Store.getMovies();
+
+        movies.push(movie);
+
+        localStorage.setItem('movies', JSON.stringify(movies));
+    }
+
+    // Static method for deleting a movie from the localStorage
+    static deleteMovieLS(name){
+        const movies = Store.getMovies();
+
+        movies.forEach(function(movie, index){
+            if(movie.name === name){
+                movies.splice(index, 1);
+            }
+        })
+
+        localStorage.setItem('movies', JSON.stringify(movies));
     }
 }
 
@@ -211,9 +152,21 @@ const ui = new UI();
 
 // Event Listeners
 document.addEventListener('DOMContentLoaded', validation);
-document.addEventListener('DOMContentLoaded', ui.persistMovieList);
+document.addEventListener('DOMContentLoaded', Store.displayMovies);
 movieForm.addEventListener('submit', addMovie);
-movieTableBody.addEventListener('click', ui.deleteMovieUI)
+movieTableBody.addEventListener('click', function(e){
+    const ui = new UI();
+
+    ui.deleteMovie(e);
+
+    Store.deleteMovieLS(e.target.parentNode.previousElementSibling.previousElementSibling.previousElementSibling.previousElementSibling.textContent);
+
+    e.preventDefault();
+});
+movieTableClearBtn.addEventListener('click', function(){
+    ui.clearList();
+    localStorage.clear();
+})
 
 // Function for adding movies to the list
 function addMovie(e){
@@ -232,7 +185,7 @@ function addMovie(e){
 
     // Storing the information about the movie(name, category, year, director)
     // to the localStorage
-    movieData.storeMovieLocally();
+    Store.addMoviesLS(movieData);
 
     // Clearing the input fields
     ui.clearInput();

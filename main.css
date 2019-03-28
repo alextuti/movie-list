@@ -50,7 +50,7 @@ hr{
     column-gap: 25px;
 }
 
-#movie-submit{
+#movie-submit, #movie-table-clear{
     width: 125px;
 }
 
